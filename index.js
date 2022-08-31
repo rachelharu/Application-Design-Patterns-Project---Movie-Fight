@@ -12,16 +12,23 @@ const fetchData = async (searchTerm) => {
 
 const input = document.querySelector('input');
 
-//sets time interval to 1 second. when the user stops typing fetchData request will be sent to api.
-let timeoutId;
-const onInput = event => {
+// debounce ratelimiting function for reuse 
+const debounce = (func, delay = 1000) => {
+    let timeoutId;
+    return (...args) => {
     if (timeoutId) {
         clearTimeout(timeoutId);
     }
     timeoutId = setTimeout(() => {
-        fetchData(event.target.value);
-}, 500);
+        func.apply(null, args);
+    }, delay);  
+    };
 };
 
-input.addEventListener('input', onInput);
+
+//sets time interval. when the user stops typing fetchData request will be sent to api.
+const onInput = event => {
+    fetchData(event.target.value);
+};
+input.addEventListener('input', debounce(onInput, 500));
 
