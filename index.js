@@ -32,6 +32,12 @@ const resultsWrapper = document.querySelector('.results');
 //sets time interval. when the user stops typing fetchData request will be sent to api.
 const onInput = async event => {
    const movies = await fetchData(event.target.value);
+    //if statement to close drop down menu if there is no text in input field 
+    if (!movies.length) {
+        dropdown.classList.remove('is-active');
+        return;
+    }
+
    //creates element to render image of movie poster in drop down widget
    resultsWrapper.innerHTML = '';
    dropdown.classList.add('is-active');
