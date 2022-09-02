@@ -1,85 +1,43 @@
 //function to search api database for movie title
 const fetchData = async (searchTerm) => {
-    const response = await axios.get('http://www.omdbapi.com/', {
-        params: { 
-            apikey: 'ed7394f',
-            s: searchTerm 
-        }
-    } );
+  const response = await axios.get("http://www.omdbapi.com/", {
+    params: {
+      apikey: "ed7394f",
+      s: searchTerm,
+    },
+  });
 
-    if (response.data.Error) {
-        return [];
-    }
-
-    return response.data.Search;
+  if (response.data.Error) {
+    return [];
+  }
+  return response.data.Search;
 };
 
-const root = document.querySelector('.autocomplete');
-root.innerHTML = `
- <label><b>Search For a Movie</b></label>
- <input class="input" />
- <div class="dropdown">
-    <div class="dropdown-menu">
-        <div class="dropdown-content results"></div>
-    </div>
-</div>
-`;
-
-const input = document.querySelector('input');
-const dropdown = document.querySelector('.dropdown');
-const resultsWrapper = document.querySelector('.results');
-
-//sets time interval. when the user stops typing fetchData request will be sent to api.
-const onInput = async event => {
-   const movies = await fetchData(event.target.value);
-    //if statement to close drop down menu if there is no text in input field 
-    if (!movies.length) {
-        dropdown.classList.remove('is-active');
-        return;
-    }
-
-   //creates element to render image of movie poster in drop down widget
-   resultsWrapper.innerHTML = '';
-   dropdown.classList.add('is-active');
-   for (let movie of movies) {
-    const option = document.createElement('a');
-    const imgSrc = movie.Poster === 'N/A' ? '' : movie.Poster;
-
-    option.classList.add('dropdown-item');
-    option.innerHTML = `
+createAutoComplete({
+  root: document.querySelector(".autocomplete"),
+  renderOption(movie) {
+    const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
+    return `
         <img src="${imgSrc}" />
-        ${movie.Title}
-    `; //function that removes drop down list once option is clicked and changes input of selected title
-    option.addEventListener('click', () => {
-        dropdown.classList.remove('is-active');
-        input.value = movie.Title;
-        onMovieSelect(movie);
-    });
-
-    resultsWrapper.appendChild(option);
-   }
-};
-input.addEventListener('input', debounce(onInput, 500));
-
-document.addEventListener('click', event => {
-    if (!root.contains(event.target)) {
-        dropdown.classList.remove('is-active');
-    }
+        ${movie.Title} (${movie.Year})
+    `;
+  }
 });
 
-const onMovieSelect = async movie => {
-    const response = await axios.get('http://www.omdbapi.com/', {
-        params: { 
-            apikey: 'ed7394f',
-            i: movie.imdbID 
-        }
-    });
-  
-    document.querySelector('#summary').innerHTML = movieTemplate(response.data)
+
+const onMovieSelect = async (movie) => {
+  const response = await axios.get("http://www.omdbapi.com/", {
+    params: {
+      apikey: "ed7394f",
+      i: movie.imdbID,
+    },
+  });
+
+  document.querySelector("#summary").innerHTML = movieTemplate(response.data);
 };
 
 const movieTemplate = (movieDetail) => {
-    return `
+  return `
     <article class="media">
         <figure class="media-left">
             <p class="image">
@@ -114,5 +72,5 @@ const movieTemplate = (movieDetail) => {
         <p class="title">${movieDetail.imdbVotes}</p>
         <p class="subtitle">IMDB Votes</p>
     </article>
-    `;  
+    `;
 };
