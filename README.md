@@ -1,6 +1,6 @@
 Application Design Patterns Project - Movie Fight
 
-About: a movie fight app that compares movie stats and shows which is better. a green stat box indicates a win a yellow stat box indicates a loss. 
+About: a movie fight app that compares movie stats and shows a winner. a green stat box indicates a win a yellow stat box indicates a loss. 
 
 instructions:
 user types in two movies to be compared. once they search some information about the movies will be displayed.
