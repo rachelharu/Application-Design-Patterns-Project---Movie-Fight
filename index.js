@@ -68,20 +68,42 @@ const onMovieSelect = async (movie, summaryElement, side) => {
   }
 };
 
-const runComparison = () => {};
+const runComparison = () => {
+  const leftSideStats = document.querySelectorAll(
+    "#left-summary .notification"
+  );
+  const rightSideStats = document.querySelectorAll(
+    "#right-summary .notification"
+  );
+
+  leftSideStats.forEach((leftStat, index) => {
+    const rightStat = rightSideStats[index];
+
+    const leftSideValue = leftStat.dataset.value;
+    const rightSideValue = rightStat.dataset.value;
+
+    if (rightSideValue > leftSideValue) {
+        leftStat.classList.remove('is-primary');
+        leftStat.classList.add('is-warning');
+    } else {
+        rightStat.classList.remove('is-primary');
+        rightStat.classList.add('is-warning');
+    }
+  });
+};
 
 // data-value properties for comparison
 const movieTemplate = (movieDetail) => {
   const dollars = parseInt(
     movieDetail.BoxOffice.replace(/\$/g, "").replace(/,/g, "")
-  ); 
+  );
   const metascore = parseInt(movieDetail.Metascore);
-  //parseFloat takes string that has decimal converts to full num with decimal
-  const imdbRating = parseFloat(movieDetail.imdbRating);
+  const imdbRating = parseFloat(movieDetail.imdbRating); //parseFloat takes string that has decimal converts to full num with decimal
   const imdbVotes = parseInt(movieDetail.imdbVotes.replace(/,/g, ""));
 
-  let count = 0; //puts string into array that checks for numbers 
-  const awards = movieDetail.Awards.split(' ').reduce((prev, word) => {
+  //puts string into array that checks for number
+  let count = 0;
+  const awards = movieDetail.Awards.split(" ").reduce((prev, word) => {
     const value = parseInt(word);
 
     if (isNaN(value)) {
@@ -89,8 +111,7 @@ const movieTemplate = (movieDetail) => {
     } else {
       return prev + value;
     }
-  },0 );
-  console.log(awards);
+  }, 0);
 
   return `
     <article class="media">
