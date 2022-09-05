@@ -1,4 +1,4 @@
-//variable containing autoComplete function
+// function to render movie info
 const autoCompleteConfig = {
   renderOption(movie) {
     const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
@@ -6,9 +6,6 @@ const autoCompleteConfig = {
             <img src="${imgSrc}" />
             ${movie.Title} (${movie.Year})
         `;
-  },
-  onOptionSelect(movie) {
-    onMovieSelect(movie);
   },
   inputValue(movie) {
     return movie.Title;
@@ -28,16 +25,28 @@ const autoCompleteConfig = {
   },
 };
 
+//function that displays autocomplete widget
 createAutoComplete({
   ...autoCompleteConfig,
   root: document.querySelector("#left-autocomplete"),
+  //hides tutorial message once message is clicked with is-hidden
+  onOptionSelect(movie) {
+    document.querySelector(".tutorial").classList.add("is-hidden");
+    onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
+  }
 });
 createAutoComplete({
-    ...autoCompleteConfig,
-    root: document.querySelector("#right-autocomplete"),
-  });
+  ...autoCompleteConfig,
+  root: document.querySelector("#right-autocomplete"),
+  onOptionSelect(movie) {
+    document.querySelector(".tutorial").classList.add("is-hidden");
+    onMovieSelect(movie, document.querySelector('#right-summary'), 'right');
+  }
+});
 
-const onMovieSelect = async (movie) => {
+let leftMovie;
+let rightMovie;
+const onMovieSelect = async (movie, summaryElement, side) => {
   const response = await axios.get("http://www.omdbapi.com/", {
     params: {
       apikey: "ed7394f",
@@ -45,10 +54,25 @@ const onMovieSelect = async (movie) => {
     },
   });
 
-  document.querySelector("#summary").innerHTML = movieTemplate(response.data);
+  summaryElement.innerHTML = movieTemplate(response.data);
+
+ //checks if movie data are defined on screen if they are it will runComparison
+  if (side === 'left') {
+    leftMovie = response.data;
+  } else {
+    rightMovie = response.data;
+  }
+  
+  if (leftMovie && rightMovie) {
+    runComparison();  
+}     
 };
 
-const movieTemplate = (movieDetail) => {
+const runComparison = () => {
+    console.log('time!!!');
+};
+
+const movieTemplate = movieDetail => {
   return `
     <article class="media">
         <figure class="media-left">
