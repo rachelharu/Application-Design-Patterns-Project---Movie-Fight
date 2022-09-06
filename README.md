@@ -9,4 +9,4 @@ user types in two movies to be compared. once they search some information about
  creating re usable functions to be used in other projects. for instance inside autocomplete.js and utils.js there are functions that can either be used for other projects or used uniquely multiple times in a project.
   
 
-credits: HTML, CSS, JAVASCRIPT, and bulma css
+credits: HTML, CSS, JAVASCRIPT, and bulma css. omdbapi
